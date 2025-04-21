@@ -34,4 +34,23 @@ Framework: `discord.py`
 
 
 
+## Local Testing
+
+Set up a Python virtual environment:
+```bash
+python3 -m venv venv
+```
+This generates the virtual environment files.  
+
+Then, activate the virtual environment by sourcing the `activate` shell script that
+was generated.  
+```bash
+. venv/bin/activate
+```
+The venv is now active, and you can install project-specific dependencies.  
+```bash
+pip install -U discord.py
+```
+
+
 
