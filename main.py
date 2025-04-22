@@ -13,12 +13,16 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 bot: Bot = Bot()
 
 # Normal bot commands ("!greet")
-@bot.command(aliases="hi")
+
+
+@bot.command("hi")
 async def greet(ctx: commands.Context) -> None:
     logging.info("Greet command invoked.\n")
     await ctx.send(f"Hello, {ctx.author}.")
 
 # Slash commands (/greet)
+
+
 @bot.tree.command(name="greet", description="Say Hello")
 async def greet_command(interaction: discord.Interaction):
     await interaction.response.send_message(f"Hello, {interaction.user.display_name}")
@@ -34,5 +38,3 @@ async def main() -> None:
 
 if __name__ == '__main__':
     asyncio.run(main())
-
-
