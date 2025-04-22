@@ -27,23 +27,37 @@ class Bot(commands.Bot):
         Passes in a custom formatter to `discord.utils.setup_logging` to
         customize the format of the log string.
         """
-        os.makedirs('logs')
-        log_format = "%(asctime)s %(name)s %(levelname)-8s: %(message)s"
-        date_format = "%Y-%m-%d %H:%M:%S"
 
-        formatter: logging.Formatter = logging.Formatter(log_format, datefmt=date_format)
+        try:
 
-        file_handler: logging.FileHandler = logging.FileHandler("logs/bot.log", encoding="utf-8")
-        file_handler.setFormatter(formatter)
+            if not os.path.exists('./logs/'):
+                os.makedirs('logs')
+            else:
+                log_format = "%(asctime)s %(name)s %(levelname)-8s: %(message)s"
+                date_format = "%Y-%m-%d %H:%M:%S"
 
-        stream_handler: logging.StreamHandler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
+                formatter: logging.Formatter = logging.Formatter(
+                    log_format, datefmt=date_format)
 
-        # File and console logging
-        logging.basicConfig(
-            level=logging.INFO,
-            handlers = [ file_handler, stream_handler ],
-        )
+                file_handler: logging.FileHandler = logging.FileHandler(
+                    "logs/bot.log", encoding="utf-8")
+                file_handler.setFormatter(formatter)
+
+                stream_handler: logging.StreamHandler = logging.StreamHandler()
+                stream_handler.setFormatter(formatter)
+
+                # File and console logging
+                logging.basicConfig(
+                    level=logging.INFO,
+                    handlers=[file_handler, stream_handler],
+                )
+
+        except OSError as e:
+            print(e)
+            logging.error(e)
+        except Exception as e:
+            print(e)
+            logging.error(e)
 
     async def on_ready(self) -> None:
         """Called when the bot is ready to start working."""
@@ -52,20 +66,18 @@ class Bot(commands.Bot):
         logging.info(f"Connected to {len(self.guilds)} guild(s)")
 
         self.text_channels = {
-            channel.id: channel 
-            for guild in self.guilds 
+            channel.id: channel
+            for guild in self.guilds
             for channel in guild.text_channels
         }
 
         self.active_threads = {
-            thread.id: thread 
-            for guild in self.guilds 
+            thread.id: thread
+            for guild in self.guilds
             for thread in await guild.active_threads()
         }
-
 
     async def setup_hook(self) -> None:
         await super().setup_hook()
         await self.tree.sync()
         logging.info("Synced application commands.")
-
