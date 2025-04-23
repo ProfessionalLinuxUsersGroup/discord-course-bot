@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
-import os
-import discord
-import logging
 import asyncio
+import logging
+import os
+
+import discord
 from discord.ext import commands
 
 PREFIXES = "?", "!"
@@ -29,35 +30,35 @@ class Bot(commands.Bot):
         """
 
         try:
-
-            if not os.path.exists('./logs/'):
-                os.makedirs('logs')
-            else:
-                log_format = "%(asctime)s %(name)s %(levelname)-8s: %(message)s"
-                date_format = "%Y-%m-%d %H:%M:%S"
-
-                formatter: logging.Formatter = logging.Formatter(
-                    log_format, datefmt=date_format)
-
-                file_handler: logging.FileHandler = logging.FileHandler(
-                    "logs/bot.log", encoding="utf-8")
-                file_handler.setFormatter(formatter)
-
-                stream_handler: logging.StreamHandler = logging.StreamHandler()
-                stream_handler.setFormatter(formatter)
-
-                # File and console logging
-                logging.basicConfig(
-                    level=logging.INFO,
-                    handlers=[file_handler, stream_handler],
-                )
+            if not os.path.exists("./logs/"):
+                os.makedirs("logs")
 
         except OSError as e:
             print(e)
-            logging.error(e)
         except Exception as e:
             print(e)
-            logging.error(e)
+
+        finally:
+            log_format = "%(asctime)s %(name)s %(levelname)-8s: %(message)s"
+            date_format = "%Y-%m-%d %H:%M:%S"
+
+            formatter: logging.Formatter = logging.Formatter(
+                log_format, datefmt=date_format
+            )
+
+            file_handler: logging.FileHandler = logging.FileHandler(
+                "logs/bot.log", encoding="utf-8"
+            )
+            file_handler.setFormatter(formatter)
+
+            stream_handler: logging.StreamHandler = logging.StreamHandler()
+            stream_handler.setFormatter(formatter)
+
+            # File and console logging
+            logging.basicConfig(
+                level=logging.INFO,
+                handlers=[file_handler, stream_handler],
+            )
 
     async def on_ready(self) -> None:
         """Called when the bot is ready to start working."""
