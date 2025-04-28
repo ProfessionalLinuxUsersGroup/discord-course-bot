@@ -78,6 +78,21 @@ class Bot(commands.Bot):
             for thread in await guild.active_threads()
         }
 
+        # discord.Thread.fetch_members # -> []discord.ThreadMember
+        # discord.ThreadMember.id      # User ID?
+        # discord.Thread.fetch_message
+
+        for id, ch in self.text_channels.items():
+            logging.info(f"Channel: {ch}")
+            logging.info(f"ID: {id}")
+
+        for id, th in self.active_threads.items():
+            logging.info(f"Thread: {th}")
+            logging.info(f"ID: {id}")
+
+        logging.info(f"Text channels: {self.text_channels}")
+        logging.info(f"Threads: {self.active_threads}")
+
     async def setup_hook(self) -> None:
         await super().setup_hook()
         await self.tree.sync()
