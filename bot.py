@@ -63,8 +63,8 @@ class Bot(commands.Bot):
     async def on_ready(self) -> None:
         """Called when the bot is ready to start working."""
         print("Bot is ready.")
-        logging.info(f"Logged in as: {self.user} (ID: {self.user.id})")
-        logging.info(f"Connected to {len(self.guilds)} guild(s)")
+        print(f"Logged in as: {self.user} (ID: {self.user.id})")
+        print(f"Connected to {len(self.guilds)} guild(s)")
 
         self.text_channels = {
             channel.id: channel
@@ -83,17 +83,12 @@ class Bot(commands.Bot):
         # discord.Thread.fetch_message
 
         for id, ch in self.text_channels.items():
-            logging.info(f"Channel: {ch}")
-            logging.info(f"ID: {id}")
+            print(f"Channel: {ch} ID: {id}")
 
         for id, th in self.active_threads.items():
-            logging.info(f"Thread: {th}")
-            logging.info(f"ID: {id}")
-
-        logging.info(f"Text channels: {self.text_channels}")
-        logging.info(f"Threads: {self.active_threads}")
+            print(f"Thread: {th} ID: {id}")
 
     async def setup_hook(self) -> None:
         await super().setup_hook()
         await self.tree.sync()
-        logging.info("Synced application commands.")
+        print("Synced application commands.")

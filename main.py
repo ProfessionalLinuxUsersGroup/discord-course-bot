@@ -44,38 +44,33 @@ async def set_dp(interaction: discord.Interaction, course: str, unit: int, dp_nu
 
 @bot.tree.command(name="debug", description="Output data gathered on users")
 async def debug_user_data(interaction: discord.Interaction, msg: str = ""):
+
     threads = interaction.guild.threads if interaction.guild else None
+
     if not threads:
-        logging.warning(f"Failed to pull threads!")
- 
-
+        await interaction.response.send_message(f"Failed to pull threads!")
+         
     if msg == "users":
-        logging.info(f"Visible users: {bot.users}")
         await interaction.response.send_message(
-            f"Visible users: {', '.join(user.name for user in bot.users)}"
-        )
-    elif msg == "threads":
-        logging.info(f"Visible active threads: {bot.active_threads}")
-        await interaction.response.send_message(
-            f"Visible active threads: {bot.active_threads}"
-        )
-    elif msg == "channels":
-        logging.info(f"Visible text channels: {bot.text_channels}")
-        await interaction.response.send_message(
-            f"Visible text channels: {bot.text_channels}"
-        )
-    else:
-        logging.info(f"Visible users: {bot.users}")
-        logging.info(f"Visible active threads: {bot.active_threads}")
-        logging.info(f"Visible text channels: {bot.text_channels}")
-        await interaction.response.send_message(f"Visible users: {bot.users}")
-        await interaction.response.send_message(
-            f"Visible active threads: {bot.active_threads}"
-        )
-        await interaction.response.send_message(
-            f"Visible text channels: {bot.text_channels}"
-        )
+            f"Visible users: {', '.join(user.name for user in bot.users)}")
 
+    elif msg == "threads":
+        await interaction.response.send_message(
+            f"Visible active threads: {bot.active_threads}")
+
+    elif msg == "channels":
+        await interaction.response.send_message(
+            f"Visible text channels: {bot.text_channels}")
+        
+
+    else:
+        await interaction.response.send_message(
+            f"""
+            Visible users: {bot.users}
+            \nVisible active threads: {bot.active_threads}
+            \nVisible text channels: {bot.text_channels}
+            """
+        )
 
 async def main() -> None:
     async with bot:
@@ -83,7 +78,6 @@ async def main() -> None:
             await bot.start(BOT_TOKEN)
         else:
             raise Exception("No bot token provided.")
-
 
 if __name__ == "__main__":
     asyncio.run(main())
