@@ -10,6 +10,8 @@ from bot import Bot
 # Bot token should be exported in the ./venv/bin/activate script
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
+# permission integer: 53687176192
+
 bot: Bot = Bot()
 
 # Normal bot commands ("!greet")
@@ -20,12 +22,59 @@ async def greet(ctx: commands.Context) -> None:
     logging.info("Greet command invoked.\n")
     await ctx.send(f"Hello, {ctx.author}.")
 
+
 # Slash commands (/greet)
+# https://discordpy.readthedocs.io/en/stable/interactions/api.html#discord.Interaction
 
 
 @bot.tree.command(name="greet", description="Say Hello")
 async def greet_command(interaction: discord.Interaction):
     await interaction.response.send_message(f"Hello, {interaction.user.display_name}")
+
+
+# Tree command for registering a thread as a discussion post
+# Access thread id (is channel ID the ID of the forum itself?) -
+# interaction.channel_id
+
+# /dp admin 1 1
+@bot.tree.command(name="dp", description="Set thread as a discussion post.")
+async def set_dp(interaction: discord.Interaction, course: str, unit: int, dp_number: int):
+    pass
+    # thread_id = interaction.guild.
+
+@bot.tree.command(name="debug", description="Output data gathered on users")
+async def debug_user_data(interaction: discord.Interaction, msg: str = ""):
+    threads = interaction.guild.threads if interaction.guild else None
+    if not threads:
+        logging.warning(f"Failed to pull threads!")
+ 
+
+    if msg == "users":
+        logging.info(f"Visible users: {bot.users}")
+        await interaction.response.send_message(
+            f"Visible users: {', '.join(user.name for user in bot.users)}"
+        )
+    elif msg == "threads":
+        logging.info(f"Visible active threads: {bot.active_threads}")
+        await interaction.response.send_message(
+            f"Visible active threads: {bot.active_threads}"
+        )
+    elif msg == "channels":
+        logging.info(f"Visible text channels: {bot.text_channels}")
+        await interaction.response.send_message(
+            f"Visible text channels: {bot.text_channels}"
+        )
+    else:
+        logging.info(f"Visible users: {bot.users}")
+        logging.info(f"Visible active threads: {bot.active_threads}")
+        logging.info(f"Visible text channels: {bot.text_channels}")
+        await interaction.response.send_message(f"Visible users: {bot.users}")
+        await interaction.response.send_message(
+            f"Visible active threads: {bot.active_threads}"
+        )
+        await interaction.response.send_message(
+            f"Visible text channels: {bot.text_channels}"
+        )
 
 
 async def main() -> None:
@@ -36,5 +85,5 @@ async def main() -> None:
             raise Exception("No bot token provided.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
