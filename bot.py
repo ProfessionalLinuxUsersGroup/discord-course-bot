@@ -3,11 +3,13 @@
 import asyncio
 import logging
 import os
+from datetime import datetime
 
 import discord
 from discord.ext import commands
 
 PREFIXES: tuple = "?", "!"
+now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 class Bot(commands.Bot):
@@ -62,9 +64,9 @@ class Bot(commands.Bot):
 
     async def on_ready(self) -> None:
         """Called when the bot is ready to start working."""
-        print("Bot is ready.")
-        print(f"Logged in as: {self.user} (ID: {self.user.id})")
-        print(f"Connected to {len(self.guilds)} guild(s)")
+        print(f"{now} Bot is ready.")
+        print(f"{now} Logged in as:{self.user} (ID:{self.user.id})")
+        print(f"{now} Connected to {len(self.guilds)} guild(s)")
 
         self.text_channels = {
             channel.id: channel
@@ -83,12 +85,12 @@ class Bot(commands.Bot):
         # discord.Thread.fetch_message
 
         for id, ch in self.text_channels.items():
-            print(f"Channel: {ch} ID: {id}")
+            print(f"{now} Channel:{ch} ID:{id}")
 
         for id, th in self.active_threads.items():
-            print(f"Thread: {th} ID: {id}")
+            print(f"{now} Thread:{th} ID:{id}")
 
     async def setup_hook(self) -> None:
         await super().setup_hook()
         await self.tree.sync()
-        print("Synced application commands.")
+        print(f"{now} Synced application commands.")

@@ -72,6 +72,12 @@ async def debug_user_data(interaction: discord.Interaction, msg: str = ""):
             """
         )
 
+@bot.tree.command(name="testing", description="testing for postgres")
+async def test(interaction: discord.Interaction):
+    threads = interaction.guild.threads if interaction.guild else None
+
+
+
 async def main() -> None:
     async with bot:
         if BOT_TOKEN:
