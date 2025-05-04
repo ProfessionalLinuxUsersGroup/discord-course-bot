@@ -19,7 +19,7 @@ bot: Bot = Bot()
 
 @bot.command("hi")
 async def greet(ctx: commands.Context) -> None:
-    logging.info("Greet command invoked.\n")
+    logging.info("Greet command invoked.")
     await ctx.send(f"Hello, {ctx.author}.")
 
 
@@ -46,6 +46,7 @@ async def set_dp(interaction: discord.Interaction, course: str, unit: int, dp_nu
 async def debug_user_data(interaction: discord.Interaction, msg: str = ""):
 
     threads = interaction.guild.threads if interaction.guild else None
+    logging.info(f"Debug command invoked")
 
     if not threads:
         await interaction.response.send_message(f"Failed to pull threads!")

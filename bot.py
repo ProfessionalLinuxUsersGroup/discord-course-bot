@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import logging.handlers
 import os
 from datetime import datetime
 
@@ -27,8 +28,9 @@ class Bot(commands.Bot):
     def setup_logging(self) -> None:
         """
         Set up logging for the bot.
-        Passes in a custom formatter to `discord.utils.setup_logging` to
-        customize the format of the log string.
+        Adds std.err output to logfile and handles basic file rotation,
+        20MB max file size, rotates to bot.log.1...5
+        TODO - possibly add compression logic for log files
         """
 
         try:
@@ -41,26 +43,23 @@ class Bot(commands.Bot):
             print(e)
 
         finally:
-            log_format = "%(asctime)s %(name)s %(levelname)-8s: %(message)s"
-            date_format = "%Y-%m-%d %H:%M:%S"
-
-            formatter: logging.Formatter = logging.Formatter(
-                log_format, datefmt=date_format
-            )
-
-            file_handler: logging.FileHandler = logging.FileHandler(
-                "logs/bot.log", encoding="utf-8"
-            )
-            file_handler.setFormatter(formatter)
-
             stream_handler: logging.StreamHandler = logging.StreamHandler()
-            stream_handler.setFormatter(formatter)
 
-            # File and console logging
+            rotate_handler = logging.handlers.RotatingFileHandler(
+                filename='logs/bot.log',
+                maxBytes=20000000,
+                backupCount=5,
+                encoding='utf-8'
+            )
+
             logging.basicConfig(
                 level=logging.INFO,
-                handlers=[file_handler, stream_handler],
+                encoding='utf-8',
+                format='%(asctime)s - %(levelname)s - %(message)s',
+                datefmt="%Y-%m-%d %H:%M:%S",
+                handlers=[stream_handler,rotate_handler]
             )
+
 
     async def on_ready(self) -> None:
         """Called when the bot is ready to start working."""
