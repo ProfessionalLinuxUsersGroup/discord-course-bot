@@ -83,7 +83,6 @@ async def main() -> None:
     async with bot:
         if BOT_TOKEN:
             await bot.load_extension('cogs.database')
-            await bot.load_extension('cogs.hello')
             await bot.start(BOT_TOKEN)
         else:
             raise Exception("No bot token provided.")
