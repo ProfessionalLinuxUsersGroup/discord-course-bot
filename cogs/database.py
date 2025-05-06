@@ -8,7 +8,7 @@ class Database(commands.Cog):
         self.bot = bot
 
     # These commands can potentially take up to an hour to register in discord when using '/' commands
-    @app_commands.command(name="test-db-insert", description="test inserting data values, inserts or returns db values")
+    @app_commands.command(name="test-db-insert", description="test inserting data values, inserts or returns db values from invoker")
     async def test_insert(self, interaction: discord.Interaction):
         logging.info('test-db-insert cog invoked')
         try:
@@ -50,7 +50,17 @@ class Database(commands.Cog):
 
     # @app_commands.command(name="test-insert-msgs", description="attempts to insert messages based on user")
     # async def test_msg_insert(self, interaction: discord.Interaction):
-    #     for thread in self.bot.active_threads:
+    #     threads = await self.bot.guilds.active_threads()
+    #     for thread in threads:
+    #         for thread in threads:
+    #             async for msg in thread.history(limit=200):
+    #                 print(f"""
+    #                     ID:{msg.id}\n
+    #                     Author:{msg.author.member.id}
+    #                     Created at:{msg.created_at}\n
+    #                     Content:{msg.content}\n
+    #                     Thread start message:{thread.starter_message}
+    #                 """)
 
 async def setup(bot):
     try:
