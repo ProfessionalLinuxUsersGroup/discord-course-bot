@@ -22,11 +22,11 @@ class Database(commands.Cog):
                                interaction.user.name,)
                     )
                     c.commit()
-                    logging.info(f'Name:{interaction.user.name}, ID: {interaction.user.id} inserted into user.db')
-                    await interaction.response.send_message(f'DB: {interaction.user.name} inserted into database.')
+                    logging.info(f'Name:{interaction.user.name}, ID:{interaction.user.id} inserted into user.db')
+                    await interaction.response.send_message(f'DB:{interaction.user.name} inserted into database.')
                 else:
-                    logging.info(f'Name:{interaction.user.name}, ID: {interaction.user.id} already exist within user.db')
-                    await interaction.response.send_message(f'DB: {interaction.user.name} already exists within the database.')
+                    logging.info(f'Name:{interaction.user.name}, ID:{interaction.user.id} already exist within user.db')
+                    await interaction.response.send_message(f'DB:{interaction.user.name} already exists within the database.')
         except db.Error as e:
             print(e)
             logging.error(e)
@@ -43,11 +43,11 @@ class Database(commands.Cog):
             check = c.execute(
                 'SELECT id FROM user WHERE id = ?', (interaction.user.id,)).fetchone()
             if check is not None:
-                logging.info(f'Name:{interaction.user.name}, ID: {interaction.user.id} found in user.db')
+                logging.info(f'Name:{interaction.user.name}, ID:{interaction.user.id} found in user.db')
                 await interaction.response.send_message(f'DB: {interaction.user.name} found in user.db.')
             else:
-                logging.info(f'Name:{interaction.user.name}, ID: {interaction.user.id} absent from user.db')
-                await interaction.response.send_message(f'DB: {interaction.user.name} absent from user.db.')
+                logging.info(f'Name:{interaction.user.name}, ID:{interaction.user.id} absent from user.db')
+                await interaction.response.send_message(f'DB:{interaction.user.name} absent from user.db.')
 
 async def setup(bot):
     try:
