@@ -14,11 +14,11 @@ now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 # permission integer: 53687176192
 bot: Bot = Bot()
 
-# Should not need to use this
-# @bot.command()
-# async def load(ctx: commands.Context, extension: str):
-#   await bot.load_extension(f'cogs.{extension}')
-#   print(f'{now} {extension} successfully loaded')
+# May have to CTRL+R or restart Discord for changes to reflect for user
+@bot.command()
+async def load(ctx: commands.Context, extension: str):
+  await bot.load_extension(f'cogs.{extension}')
+  print(f'{now} {extension} successfully loaded')
 
 # cog unloader command, !unload {cog name}
 @bot.command()
@@ -54,7 +54,7 @@ async def main() -> None:
             for filename in os.listdir('./cogs'):
               if filename.endswith('.py'):
                 await bot.load_extension(f'cogs.{filename[:-3]}')
-                await bot.start(BOT_TOKEN)
+            await bot.start(BOT_TOKEN)
         else:
             raise Exception("No bot token provided.")
 

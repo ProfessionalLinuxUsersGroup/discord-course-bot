@@ -10,8 +10,6 @@ from discord import app_commands
 # INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...)
 # ON DUPLICATE KEY UPDATE column1 = value1, column2 = value2, ...;
 
-# Reloading via bot.reload_extension() requires re-importing libraries/modules
-
 class Database(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -57,13 +55,15 @@ class Database(commands.Cog):
                 logging.info(f'Name:{query} absent from user.db')
                 await interaction.response.send_message(f'DB:{query} absent from user.db.')
 
-    @commands.command(name="test-insert-msgs")
-    async def test_msg_insert(self, ctx: commands.Context):
+    # Will be refactored into a bot task and treated as a cron job with mildly intelligent execution
+        # For example, minimize amount of operations, only search for messages since last scan time, etc..
+    @app_commands.command(name="test-insert-msgs", description="tests inserting message meta data into db")
+    async def test_msg_insert(self, interaction: discord.Interaction):
         logging.info(f'test-insert-msgs command invoked')
-        threads = await ctx.guild.active_threads()
+        threads = await interaction.channel.guild.active_threads()
         for thread in threads:
-            async for msg in thread.history(limit=2):
-                await ctx.send(
+            async for msg in thread.history(limit=1):
+                await interaction.response.send_message(
                     f'Message ID: {msg.id}\n'
                     f'Author ID: {msg.author.id}\n'
                     f'Author Name: {msg.author.name}\n'
