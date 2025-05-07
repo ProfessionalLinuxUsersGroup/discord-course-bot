@@ -29,7 +29,7 @@ class Bot(commands.Bot):
         """
         Set up logging for the bot.
         Adds std.err output to logfile and handles basic file rotation,
-        20MB max file size, rotates to bot.log.1...5
+        2MB max file size, rotates to bot.log.1...5
         TODO - possibly add compression logic for log files
         """
 
@@ -47,7 +47,7 @@ class Bot(commands.Bot):
 
             rotate_handler = logging.handlers.RotatingFileHandler(
                 filename='logs/bot.log',
-                maxBytes=20000000,
+                maxBytes=2000000,
                 backupCount=5,
                 encoding='utf-8'
             )

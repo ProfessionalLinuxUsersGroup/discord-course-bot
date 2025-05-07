@@ -3,11 +3,19 @@ import sqlite3 as db
 from discord.ext import commands
 from discord import app_commands
 
+
+# Most efficient insert/update SQL statement, updates or inserts in single operation.
+# Requires keys to be unique. Statement should target user IDs when updating/inserting
+#
+# INSERT INTO table_name (column1, column2, ...) VALUES (value1, value2, ...)
+# ON DUPLICATE KEY UPDATE column1 = value1, column2 = value2, ...;
+
+# Reloading via bot.reload_extension() requires re-importing libraries/modules
+
 class Database(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # These commands can potentially take up to an hour to register in discord when using '/' commands
     @app_commands.command(name="test-db-insert", description="test inserting data values, inserts or returns db values from invoker")
     async def test_insert(self, interaction: discord.Interaction):
         logging.info('test-db-insert cog invoked')
@@ -38,6 +46,7 @@ class Database(commands.Cog):
 
     @app_commands.command(name="test-return-db-query", description="attempts to return db values from input")
     async def test_return(self, interaction: discord.Interaction, query: str):
+        logging.info(f'test-return-db-query command invoked')
         with db.connect('user.db') as c:
             check = c.execute(
                 "SELECT id,username FROM user WHERE username LIKE (?)", (f"%{query}%",)).fetchone()
@@ -48,19 +57,21 @@ class Database(commands.Cog):
                 logging.info(f'Name:{query} absent from user.db')
                 await interaction.response.send_message(f'DB:{query} absent from user.db.')
 
-    # @app_commands.command(name="test-insert-msgs", description="attempts to insert messages based on user")
-    # async def test_msg_insert(self, interaction: discord.Interaction):
-    #     threads = await self.bot.guilds.active_threads()
-    #     for thread in threads:
-    #         for thread in threads:
-    #             async for msg in thread.history(limit=200):
-    #                 print(f"""
-    #                     ID:{msg.id}\n
-    #                     Author:{msg.author.member.id}
-    #                     Created at:{msg.created_at}\n
-    #                     Content:{msg.content}\n
-    #                     Thread start message:{thread.starter_message}
-    #                 """)
+    @commands.command(name="test-insert-msgs")
+    async def test_msg_insert(self, ctx: commands.Context):
+        logging.info(f'test-insert-msgs command invoked')
+        threads = await ctx.guild.active_threads()
+        for thread in threads:
+            async for msg in thread.history(limit=2):
+                await ctx.send(
+                    f'Message ID: {msg.id}\n'
+                    f'Author ID: {msg.author.id}\n'
+                    f'Author Name: {msg.author.name}\n'
+                    f'Created at: {msg.created_at}\n'
+                    f'Content: {msg.content}\n'
+                    f'Word Count: {len(msg.content.split())}\n'
+                    f'Thread Name: {thread.name}',
+                    ephemeral=True)
 
 async def setup(bot):
     try:
@@ -78,6 +89,7 @@ async def setup(bot):
                     CREATE TABLE messages(
                         userid INTEGER,
                         content TEXT,
+                        word_count TEXT,
                         date TEXT,
                         unit INTEGER,
                         FOREIGN KEY (userid) REFERENCES user(id)
